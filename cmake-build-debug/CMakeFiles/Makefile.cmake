@@ -39,7 +39,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "../graphData1.txt"
   "../graphData2.txt"
   "../graphData3.txt"
-  "../results.txt"
+  "../results1.txt"
   )
 
 # The corresponding makefile is:
@@ -53,7 +53,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "graphData1.txt"
   "graphData2.txt"
   "graphData3.txt"
-  "results.txt"
+  "results1.txt"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 

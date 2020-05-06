@@ -1,8 +1,4 @@
 "C:\Program Files\JetBrains\CLion 2018.3.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\amory\OneDrive\Desktop\finalProject
-CMake Error: File C:/Users/amory/OneDrive/Desktop/finalProject/results.txt does not exist.
-CMake Error at CMakeLists.txt:28 (configure_file):
-  configure_file Problem configuring file
-
-
--- Configuring incomplete, errors occurred!
-See also "C:/Users/amory/OneDrive/Desktop/finalProject/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/amory/OneDrive/Desktop/finalProject/cmake-build-debug

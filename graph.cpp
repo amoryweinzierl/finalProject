@@ -25,6 +25,7 @@ void graph::addEdge(int v1, int v2) {
 }
 
 //depth first search
+//referenced https://www.techiedelight.com/check-given-graph-strongly-connected-not/
 void graph::DFS(){
     //initializes every index in checked to false
     for(int i = 0; i < numVertices; i++){
@@ -42,35 +43,63 @@ void graph::DFS(){
 }
 
 //depth first search
-void graph::DFSCheck(int v) {
-    // Mark the current node as visited and print it
-    checked[v] = true;
-    cout << v << " ";
+//checks if strongly connected
+//referenced https://www.techiedelight.com/check-given-graph-strongly-connected-not/
+void graph::DFSCheck(int vertex) {
+    //marks vertex and true
+    checked[vertex] = true;
+    cout << vertex << " ";
 
-    // Recur for all the vertices adjacent to this vertex
+    //check all adjacent vertices to vertex in adjacencyList
     list<int>::iterator iter;
-    for (iter = adjacencyList[v].begin(); iter != adjacencyList[v].end(); iter++)
+    for (iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++)
         if (!checked[*iter])
+            //if not checked, recursively call DFSCheck
             DFSCheck(*iter);
+}
+
+//depth first search
+//checks if strongly connected
+//redefinition that takes in a local bool array instead of utilizing class variable
+//used for kosaraju's m
+//referenced https://www.techiedelight.com/check-given-graph-strongly-connected-not/
+void graph::DFSCheck(int vertex, bool localCheck[]) {
+    //marks vertex and true
+    localCheck[vertex] = true;
+    cout << vertex << " ";
+
+    //check all adjacent vertices to vertex in adjacencyList
+    list<int>::iterator iter;
+    for (iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++)
+        if (!localCheck[*iter])
+            //if not checked, recursively call DFSCheck
+            DFSCheck(*iter, localCheck);
 }
 
 //kosaraju's algorithm
 void graph::Kosajaru(){
+    //local checked boolean array
+    bool *localCheck = new bool[numVertices];
+
     //initializes all vertices in checked to false
-    for(int i = 0; i < numVertices; i++)
-        checked[i] = false;
+    for(int i = 0; i < numVertices; i++) {
+        localCheck[i] = false;
+    }
 
     // Fill vertices in stack according to their finishing times
-    for(int j = 0; j < numVertices; j++)
-        if(checked[j] == false)
-            calcTime(j);
+    for(int j = 0; j < numVertices; j++) {
+        if (localCheck[j] == false) {
+            calcTime(j, localCheck);
+        }
+    }
 
     //get transposed graph
     graph transposedGraph = transpose();
 
     //reset all vertices in to false
-    for(int i = 0; i < numVertices; i++)
-        checked[i] = false;
+    for(int i = 0; i < numVertices; i++) {
+        localCheck[i] = false;
+    }
 
     //while stack not empty
     while (!Stack.empty()){
@@ -79,24 +108,24 @@ void graph::Kosajaru(){
         Stack.pop();
 
         //get SCCs of vertex
-        if (checked[vertex] == false){
-            transposedGraph.DFSCheck(vertex);
+        if (localCheck[vertex] == false){
+            transposedGraph.DFSCheck(vertex, localCheck);
             cout << endl;
         }
     }
 }
 
 //kosaraju's algorithm
-void graph::calcTime(int vertex){
+void graph::calcTime(int vertex, bool localCheck[]){
     //mark vertex as checked
-    checked[vertex] = true;
+    localCheck[vertex] = true;
 
     //check all adjacent vertexes to vertex in adjacency list
     list<int>::iterator iter;
     for(iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++)
-        if(checked[*iter] == false)
+        if(localCheck[*iter] == false)
             //recursively call calcTime
-            calcTime(*iter);
+            calcTime(*iter, localCheck);
 
     //push vertex onto stack
     Stack.push(vertex);

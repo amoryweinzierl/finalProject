@@ -26,9 +26,10 @@ public:
 
     void DFS();
     void DFSCheck(int);
+    void DFSCheck(int, bool[]);
 
     void Kosajaru();
-    void calcTime(int);
+    void calcTime(int, bool[]);
     graph transpose();
 
     void Tarjan();

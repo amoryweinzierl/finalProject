@@ -98,7 +98,7 @@
 		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/main.cpp">
 			<Option target="finalProject"/>
 		</Unit>
-		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/results.txt">
+		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/results1.txt">
 			<Option target="finalProject"/>
 		</Unit>
 		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/CMakeLists.txt">
@@ -113,7 +113,7 @@
 		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/graphData3.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/results.txt">
+		<Unit filename="C:/Users/amory/OneDrive/Desktop/finalProject/results1.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

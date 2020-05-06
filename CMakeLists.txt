@@ -18,7 +18,9 @@ set (input01 "graphData1.txt")
 set (input02 "graphData2.txt")
 set (input03 "graphData3.txt")
 
-set (output01 "results.txt")
+set (output01 "results1.txt")
+set (output01 "results2.txt")
+set (output01 "results3.txt")
 
 #
 ##########################################
@@ -29,4 +31,4 @@ foreach(file IN LISTS input01 input02 input03 output01)
 endforeach()
 
 set(CMAKE_CXX_STANDARD 17)
-add_executable(${EXE_NAME} main.cpp graphData1.txt graphData2.txt graphData3.txt graph.h graph.cpp results.txt)
+add_executable(${EXE_NAME} main.cpp graphData1.txt graphData2.txt graphData3.txt graph.h graph.cpp results1.txt)

@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/amory/OneDrive/Desktop/finalProject/graph.cpp
+graph.h
+C:/Users/amory/OneDrive/Desktop/finalProject/graph.h
+iostream
+-
+
+C:/Users/amory/OneDrive/Desktop/finalProject/graph.h
+list
+-
+stack
+-
+vector
+-
+

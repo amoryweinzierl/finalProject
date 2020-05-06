@@ -31,4 +31,4 @@ foreach(file IN LISTS input01 input02 input03 output01)
 endforeach()
 
 set(CMAKE_CXX_STANDARD 17)
-add_executable(${EXE_NAME} main.cpp graphData1.txt graphData2.txt graphData3.txt graph.h graph.cpp results1.txt)
+add_executable(${EXE_NAME} main.cpp graphData1.txt graphData2.txt graphData3.txt graph.h graph.cpp results1.txt results2.txt results3.txt)

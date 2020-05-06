@@ -19,14 +19,14 @@ set (input02 "graphData2.txt")
 set (input03 "graphData3.txt")
 
 set (output01 "results1.txt")
-set (output01 "results2.txt")
-set (output01 "results3.txt")
+set (output02 "results2.txt")
+set (output03 "results3.txt")
 
 #
 ##########################################
 
 # Copy data files to build dir
-foreach(file IN LISTS input01 input02 input03 output01)
+foreach(file IN LISTS input01 input02 input03 output01 output02 output03)
     configure_file(${file} ${file} COPYONLY)
 endforeach()
 

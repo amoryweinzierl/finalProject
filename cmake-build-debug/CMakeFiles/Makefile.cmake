@@ -39,6 +39,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "../graphData1.txt"
   "../graphData2.txt"
   "../graphData3.txt"
+  "../results1.txt"
+  "../results2.txt"
   "../results3.txt"
   )
 
@@ -53,6 +55,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "graphData1.txt"
   "graphData2.txt"
   "graphData3.txt"
+  "results1.txt"
+  "results2.txt"
   "results3.txt"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )

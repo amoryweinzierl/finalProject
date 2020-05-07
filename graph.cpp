@@ -12,6 +12,7 @@ graph::graph(int vertices) {
     numVertices = vertices;
     adjacencyList = new list<int>[numVertices];
     checked = new bool[numVertices];
+    DFSTracker = 0;
 }
 
 graph::~graph(){
@@ -26,7 +27,7 @@ void graph::addEdge(int v1, int v2) {
 
 //depth first search
 //referenced https://www.techiedelight.com/check-given-graph-strongly-connected-not/
-void graph::DFS(){
+void graph::DFS(ofstream& ofile){
     //initializes every index in checked to false
     for(int i = 0; i < numVertices; i++){
         checked[i] = false;
@@ -36,8 +37,8 @@ void graph::DFS(){
     //if false, run dfs to visit edge and find adjacent edges
     for(int j = 0; j < numVertices; j++){
         if(checked[j] == false){
-            DFSCheck(j);
-            cout << endl;
+            DFSCheck(j, ofile);
+            ofile << endl;
         }
     }
 }
@@ -45,39 +46,51 @@ void graph::DFS(){
 //depth first search
 //checks if strongly connected
 //referenced https://www.techiedelight.com/check-given-graph-strongly-connected-not/
-void graph::DFSCheck(int vertex) {
+void graph::DFSCheck(int vertex, ofstream& ofile) {
     //marks vertex and true
     checked[vertex] = true;
-    cout << vertex << " ";
+        ofile << vertex << " ";
 
     //check all adjacent vertices to vertex in adjacencyList
     list<int>::iterator iter;
     for (iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++)
         if (!checked[*iter])
             //if not checked, recursively call DFSCheck
-            DFSCheck(*iter);
+            DFSCheck(*iter, ofile);
 }
 
 //depth first search
 //checks if strongly connected
 //redefinition that takes in a local bool array instead of utilizing class variable
-//used for kosaraju's m
+//used for kosaraju's algorithm
 //referenced https://www.techiedelight.com/check-given-graph-strongly-connected-not/
-void graph::DFSCheck(int vertex, bool localCheck[]) {
+void graph::DFSCheck(int vertex, bool localCheck[], ofstream &ofile) {
     //marks vertex and true
     localCheck[vertex] = true;
-    cout << vertex << " ";
+    if(DFSTracker == 0) {
+        ofile << vertex << " ";
+    }
 
     //check all adjacent vertices to vertex in adjacencyList
     list<int>::iterator iter;
-    for (iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++)
-        if (!localCheck[*iter])
+    for (iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++) {
+        if (!localCheck[*iter]) {
             //if not checked, recursively call DFSCheck
-            DFSCheck(*iter, localCheck);
+            DFSCheck(*iter, localCheck, ofile);
+        }
+    }
+    if(DFSTracker == 1) {
+        Stack.push(vertex);
+    }
 }
 
 //kosaraju's algorithm
-void graph::Kosajaru(){
+//referenced https://cp-algorithms.com/graph/strongly-connected-components.html
+//referenced https://www.geeksforgeeks.org/strongly-connected-components/
+//referenced https://rosettacode.org/wiki/Kosaraju#C.2B.2B
+void graph::Kosajaru(ofstream& ofile){
+    //sets boolean that first round of dfs hasn't occurred yet
+    DFSTracker = 1;
     //local checked boolean array
     bool *localCheck = new bool[numVertices];
 
@@ -89,12 +102,24 @@ void graph::Kosajaru(){
     // Fill vertices in stack according to their finishing times
     for(int j = 0; j < numVertices; j++) {
         if (localCheck[j] == false) {
-            calcTime(j, localCheck);
+            DFSCheck(j, localCheck, ofile);
         }
     }
+    //first round down, second round now
+    DFSTracker = 0;
 
-    //get transposed graph
-    graph transposedGraph = transpose();
+    //create graph object for transposed graph
+    graph transposedGraph(numVertices);
+
+    //creates transpose graph
+    //check for all vertices
+    for (int i = 0; i < numVertices; i++){
+        list<int>::iterator iter;
+        //check all adjacent vertexes in adjacencyList
+        for(iter = adjacencyList[i].begin(); iter != adjacencyList[i].end(); iter++){
+            transposedGraph.adjacencyList[*iter].push_back(i);
+        }
+    }
 
     //reset all vertices in to false
     for(int i = 0; i < numVertices; i++) {
@@ -109,107 +134,84 @@ void graph::Kosajaru(){
 
         //get SCCs of vertex
         if (localCheck[vertex] == false){
-            transposedGraph.DFSCheck(vertex, localCheck);
-            cout << endl;
+            transposedGraph.DFSCheck(vertex, localCheck, ofile);
+            ofile << endl;
         }
     }
 }
 
-//kosaraju's algorithm
-void graph::calcTime(int vertex, bool localCheck[]){
-    //mark vertex as checked
-    localCheck[vertex] = true;
-
-    //check all adjacent vertexes to vertex in adjacency list
-    list<int>::iterator iter;
-    for(iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++)
-        if(localCheck[*iter] == false)
-            //recursively call calcTime
-            calcTime(*iter, localCheck);
-
-    //push vertex onto stack
-    Stack.push(vertex);
-}
-
-//kosaraju's algorithm
-graph graph::transpose(){
-    //create graph object for transposed graph
-    graph transposedGraph(numVertices);
-
-    //check for all vertices
-    for (int i = 0; i < numVertices; i++){
-        list<int>::iterator iter;
-        //check all adjacent vertexes in adjacencyList
-        for(iter = adjacencyList[i].begin(); iter != adjacencyList[i].end(); iter++){
-            transposedGraph.adjacencyList[*iter].push_back(i);
-        }
-    }
-    //returned fully transposed graph
-    return transposedGraph;
-}
-
-void graph::Tarjan() {
+//tarjan's algorithm
+//referenced https://www.programming-algorithms.net/article/44220/Tarjan's-algorithm
+//referenced https://www.geeksforgeeks.org/tarjan-algorithm-find-strongly-connected-components/
+//referenced https://www.youtube.com/watch?v=wUgWX0nc4NY
+void graph::Tarjan(ofstream& ofile) {
+    //only one pass of dfs required
+    DFSTracker = 0;
     //times is an int pointer that points to array of ints that holds time to vertices
-    int *times = new int[numVertices];
-    //minVertex is int pointer that points to array of ints that holds vertices with lowest time
-    int *minVertex = new int[numVertices];
+    int *ids = new int[numVertices];
+    //lowlink is int pointer that points to array of ints that holds vertices with lowest time
+    int *lowlink = new int[numVertices];
 
     //initializes all arrays
     for(int i = 0; i < numVertices; i++){
         checked[i] = false;
-        times[i] = -1;
-        minVertex[i] = -1;
+        ids[i] = -1;
+        lowlink[i] = -1;
     }
 
-    //for all vertices in minVertex, if time not assigned
+    //for all vertices in lowlink, if time not assigned
     //time assigned through call to TSCC
     for(int j = 0; j <numVertices; j++){
-        if(minVertex[j] == -1){
-            TSCC(j, times, minVertex);
+        if(lowlink[j] == -1){
+            TSCC(j, ids, lowlink, ofile);
         }
     }
 }
 
-void graph::TSCC(int vertex, int times[], int minVertex[]){
+//tarjan's algorithm
+//referenced https://www.programming-algorithms.net/article/44220/Tarjan's-algorithm
+//referenced https://www.geeksforgeeks.org/tarjan-algorithm-find-strongly-connected-components/
+//referenced https://www.youtube.com/watch?v=wUgWX0nc4NY
+void graph::TSCC(int vertex, int ids[], int lowlink[], ofstream& ofile){
     //initialize static int time
-    static int time = 0;
+    static int initial = 0;
 
-    //initializes times and minVertex
-    times[vertex] = minVertex[vertex] = ++time;
+    //initializes ids and lowlink to be same value
+    ids[vertex] = lowlink[vertex] = ++initial;
     //push vertex to stack
     Stack.push(vertex);
     //vertex is in stack
     checked[vertex] = true;
 
+    //depth first search
     list<int>::iterator iter;
     //goes through all vertices adjacent to vertex in adjacecy list
     for (iter = adjacencyList[vertex].begin(); iter != adjacencyList[vertex].end(); iter++){
         //adjacentVertex set
         int adjVertex = *iter;
         //if time hasn't been set
-        if (times[adjVertex] == -1){
+        if (ids[adjVertex] == -1){
             //recursively calls TSCC
-            TSCC(adjVertex, times, minVertex);
-            //checks if vertex and adjVertex are connected to each other in subtree
-            minVertex[vertex]  = min(minVertex[vertex], minVertex[adjVertex]);
+            TSCC(adjVertex, ids, lowlink, ofile);
+            //checks if vertex and adjVertex are connected to each other in subtree by checking stack
+            //then takes min of the twos lowlink
+            lowlink[vertex]  = min(lowlink[vertex], lowlink[adjVertex]);
         }
 
         //if adjVertex in stack
         else if (checked[adjVertex] == true) {
-            //updates value of vertex in minVertex
-            minVertex[vertex] = min(minVertex[vertex], times[adjVertex]);
+            //updates value of vertex in lowlink
+            lowlink[vertex] = min(lowlink[vertex], ids[adjVertex]);
         }
     }
     int tempVert;
-    //if head node
-    if (minVertex[vertex] == times[vertex]){
-        //while vertex is not found
+    //if lowlink and id are same, SCC done
+    if (lowlink[vertex] == ids[vertex]){
+        //pop all vertexes in SCC off stack
         while (Stack.top() != vertex){
             //pop stack
             tempVert = Stack.top();
-
-            //print tempVert
-            cout << tempVert << " ";
+            ofile << tempVert << " ";
 
             //take tempVert off stack
             checked[tempVert] = false;
@@ -218,8 +220,7 @@ void graph::TSCC(int vertex, int times[], int minVertex[]){
 
         //tempVert is vertex
         tempVert = Stack.top();
-        //print
-        cout << tempVert << endl;
+        ofile << tempVert << endl;
 
         //take off stack
         checked[tempVert] = false;

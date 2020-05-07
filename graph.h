@@ -8,6 +8,7 @@
 #include <list>
 #include <stack>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 class graph{
@@ -18,22 +19,22 @@ private:
     stack<int> Stack;
     bool *checked;
 
+    bool DFSTracker;
 public:
     graph(int);
     ~graph();
 
     void addEdge(int, int);
 
-    void DFS();
-    void DFSCheck(int);
-    void DFSCheck(int, bool[]);
+    void DFS(ofstream&);
+    void DFSCheck(int, ofstream&);
+    void DFSCheck(int, bool[], ofstream&);
 
-    void Kosajaru();
+    void Kosajaru(ofstream&);
     void calcTime(int, bool[]);
-    graph transpose();
 
-    void Tarjan();
-    void TSCC(int, int[], int[]);
+    void Tarjan(ofstream&);
+    void TSCC(int, int[], int[], ofstream&);
 };
 
 

@@ -12,12 +12,17 @@
 using namespace std;
 int main(){
     ifstream ifile;
+    ofstream ofile;
 
+    //change to graphData1.txt to run graph data (change output file to results1.txt)
+    //change to graphData2.txt to run graph data (change output file to results2.txt)
     ifile.open("graphData3.txt");
+    ofile.open("results3txt");
 
     if (ifile.fail()) {
-        cout << "file not open" << endl;
+        cout << "input file not open" << endl;
     }
+    //goes through and gets all edges from graphs
     else {
         char buffer[50];
         ifile.getline(buffer, 50, '\n'); //takes in num at the top of the file
@@ -41,38 +46,42 @@ int main(){
             ifile.getline(buffer, 50, ',');
             int root = stoi(buffer, &sz);
 
-            //cout << root << " ";
-
             ifile.getline(buffer, 50, '\n');
             int dest = stoi(buffer, &sz);
 
-            //cout << dest << endl;
-
             g.addEdge(root, dest);
         }
+        ifile.close();
 
-        cout << "DEPTH FIRST SEARCH IMPLEMENTATION" << endl;
-        auto t1 = chrono::high_resolution_clock::now();
-        g.DFS();
-        auto t2 = chrono::high_resolution_clock::now();
-        auto Time = chrono::duration_cast<chrono::microseconds>(t2-t1).count();
-        cout << "time to analyze: " << Time << "microseconds" << endl;
-        cout << endl;
+        if(ofile.fail()){
+            cout << "output file not open" << endl;
+        }
+        else {
+            ofile << "DEPTH FIRST SEARCH IMPLEMENTATION" << endl;
+            auto t1 = chrono::high_resolution_clock::now();
+            g.DFS(ofile);
+            auto t2 = chrono::high_resolution_clock::now();
+            auto Time = chrono::duration_cast<chrono::microseconds>(t2 - t1).count();
+            ofile << "time to analyze: " << Time << "microseconds" << endl;
+            ofile << endl;
 
-        cout << "KOSARAJU'S ALGORITHM" << endl;
-        t1 = chrono::high_resolution_clock::now();
-        g.Kosajaru();
-        t2 = chrono::high_resolution_clock::now();
-        Time = chrono::duration_cast<chrono::microseconds>(t2-t1).count();
-        cout << "time to analyze: " << Time << "microseconds" << endl;
-        cout << endl;
+            ofile << "KOSARAJU'S ALGORITHM" << endl;
+            t1 = chrono::high_resolution_clock::now();
+            g.Kosajaru(ofile);
+            t2 = chrono::high_resolution_clock::now();
+            Time = chrono::duration_cast<chrono::microseconds>(t2 - t1).count();
+            ofile << "time to analyze: " << Time << "microseconds" << endl;
+            ofile << endl;
 
-        cout << "TARJAN'S ALGORITHM" << endl;
-        t1 = chrono::high_resolution_clock::now();
-        g.Tarjan();
-        t2 = chrono::high_resolution_clock::now();
-        Time = chrono::duration_cast<chrono::microseconds>(t2-t1).count();
-        cout << "time to analyze: " << Time << "microseconds" << endl;
+            ofile << "TARJAN'S ALGORITHM" << endl;
+            t1 = chrono::high_resolution_clock::now();
+            g.Tarjan(ofile);
+            t2 = chrono::high_resolution_clock::now();
+            Time = chrono::duration_cast<chrono::microseconds>(t2 - t1).count();
+            ofile << "time to analyze: " << Time << "microseconds" << endl;
+
+            ofile.close();
+        }
     }
     return 0;
 }
